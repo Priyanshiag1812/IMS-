@@ -1,0 +1,112 @@
+[
+  {
+    "category": "Electronics",
+    "items": [
+      { "name": "Laptop", "qty": 10, "threshold": 2, "status": "Available" },
+      { "name": "Smartphone", "qty": 5, "threshold": 3, "status": "Available" },
+      { "name": "Tablet", "qty": 8, "threshold": 2, "status": "Available" },
+      { "name": "Smartwatch", "qty": 2, "threshold": 2, "status": "Out of Stock" },
+      { "name": "Headphones", "qty": 15, "threshold": 5, "status": "Available" }
+    ]
+  },
+  {
+    "category": "Stationery",
+    "items": [
+      { "name": "Notebook", "qty": 50, "threshold": 5, "status": "Available" },
+      { "name": "Pen", "qty": 30, "threshold": 5, "status": "Available" },
+      { "name": "Pencil", "qty": 100, "threshold": 5, "status": "Available" },
+      { "name": "Eraser", "qty": 0, "threshold": 5, "status": "Out of Stock" },
+      { "name": "Sharpener", "qty": 40, "threshold": 5, "status": "Available" }
+    ]
+  },
+  {
+    "category": "Housekeeping",
+    "items": [
+      { "name": "Mop", "qty": 9, "threshold": 2, "status": "Available" },
+      { "name": "Broom", "qty": 12, "threshold": 3, "status": "Available" },
+      { "name": "Vacuum Cleaner", "qty": 1, "threshold": 1, "status": "Available" },
+      { "name": "Garbage Bags", "qty": 20, "threshold": 5, "status": "Available" },
+      { "name": "Floor Cleaner", "qty": 0, "threshold": 2, "status": "Out of Stock" }
+    ]
+  },
+  {
+    "category": "Clothes",
+    "items": [
+      { "name": "T-Shirt", "qty": 20, "threshold": 5, "status": "Available" },
+      { "name": "Jeans", "qty": 15, "threshold": 4, "status": "Available" },
+      { "name": "Jacket", "qty": 8, "threshold": 2, "status": "Available" },
+      { "name": "Shoes", "qty": 10, "threshold": 3, "status": "Available" },
+      { "name": "Sweater", "qty": 5, "threshold": 2, "status": "Available" }
+    ]
+  },
+  {
+    "category": "Electricity",
+    "items": [
+      { "name": "LED Bulb", "qty": 30, "threshold": 5, "status": "Available" },
+      { "name": "Extension Cord", "qty": 10, "threshold": 2, "status": "Available" },
+      { "name": "Power Strip", "qty": 15, "threshold": 3, "status": "Available" },
+      { "name": "Circuit Breaker", "qty": 7, "threshold": 2, "status": "Available" },
+      { "name": "Voltage Stabilizer", "qty": 5, "threshold": 1, "status": "Available" }
+    ]
+  },
+  {
+    "category": "Hardware",
+    "items": [
+      { "name": "Hammer", "qty": 7, "threshold": 2, "status": "Available" },
+      { "name": "Drill Machine", "qty": 2, "threshold": 1, "status": "Available" },
+      { "name": "Screwdriver Set", "qty": 10, "threshold": 3, "status": "Available" },
+      { "name": "Wrench", "qty": 5, "threshold": 2, "status": "Available" },
+      { "name": "Measuring Tape", "qty": 8, "threshold": 3, "status": "Available" }
+    ]
+  },
+  {
+    "category": "Sanitary",
+    "items": [
+      { "name": "Toilet Paper", "qty": 50, "threshold": 5, "status": "Available" },
+      { "name": "Soap", "qty": 25, "threshold": 5, "status": "Available" },
+      { "name": "Hand Sanitizer", "qty": 20, "threshold": 5, "status": "Available" },
+      { "name": "Toothpaste", "qty": 30, "threshold": 5, "status": "Available" },
+      { "name": "Shampoo", "qty": 15, "threshold": 3, "status": "Available" }
+    ]
+  },
+  {
+    "category": "Mementos",
+    "items": [
+      { "name": "Trophy", "qty": 5, "threshold": 1, "status": "Available" },
+      { "name": "Medal", "qty": 10, "threshold": 2, "status": "Available" },
+      { "name": "Plaque", "qty": 3, "threshold": 1, "status": "Available" },
+      { "name": "Certificate Holder", "qty": 7, "threshold": 2, "status": "Available" },
+      { "name": "Photo Frame", "qty": 12, "threshold": 3, "status": "Available" }
+    ]
+  },
+  {
+    "category": "Camera",
+    "items": [
+      { "name": "DSLR", "qty": 3, "threshold": 1, "status": "Available" },
+      { "name": "Action Camera", "qty": 5, "threshold": 2, "status": "Available" },
+      { "name": "Webcam", "qty": 10, "threshold": 3, "status": "Available" },
+      { "name": "Tripod", "qty": 5, "threshold": 2, "status": "Available" },
+      { "name": "Camera Lens", "qty": 2, "threshold": 1, "status": "Available" }
+    ]
+  },
+  {
+    "category": "Rotary",
+    "items": [
+      { "name": "Rotary Cutter", "qty": 8, "threshold": 2, "status": "Available" },
+      { "name": "Rotary Tool Kit", "qty": 5, "threshold": 1, "status": "Available" },
+      { "name": "Rotary Saw", "qty": 4, "threshold": 1, "status": "Available" },
+      { "name": "Rotary Sander", "qty": 6, "threshold": 2, "status": "Available" },
+      { "name": "Rotary Buffer", "qty": 3, "threshold": 1, "status": "Available" }
+    ]
+  },
+  {
+    "category": "Miscellaneous",
+    "items": [
+      { "name": "Gift Cards", "qty": 20, "threshold": 5, "status": "Available" },
+      { "name": "Keychains", "qty": 50, "threshold": 5, "status": "Available" },
+      { "name": "Souvenirs", "qty": 15, "threshold": 3, "status": "Available" },
+      { "name": "Stickers", "qty": 100, "threshold": 5, "status": "Available" },
+      { "name": "Magnets", "qty": 30, "threshold": 5, "status": "Available" }
+    ]
+  }
+]
