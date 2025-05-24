@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Instance from "../AxiosConfig";
+import Instance from "../../AxiosConfig";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
@@ -17,6 +17,7 @@ function facultyRequestInventory() {
     requestByFaculty: "",
     requireDate: "",
     requestReason: "",
+    event:"",
   });
   const [requestInventory, setRequestInventory] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -55,6 +56,7 @@ function facultyRequestInventory() {
       requestByFaculty,
       requireDate,
       requestReason,
+      event,
     } = formData;
     if (
       !category ||
@@ -64,6 +66,7 @@ function facultyRequestInventory() {
       !requestReason ||
       !requireDate ||
       !returnStatus ||
+      !event ||
       Number(requestQty) <= 0
     ) {
       toast.error(
@@ -89,6 +92,7 @@ function facultyRequestInventory() {
           requestByFaculty: "",
           requireDate: "",
           requestReason: "",
+          event:"",
         });
         navigate("/faculty-view-request-table");
       }
@@ -344,6 +348,24 @@ function facultyRequestInventory() {
                   required
                 />
               </div>
+
+
+  <div className="font-bold text-blue-900">
+                <label htmlFor="eventName text-blue-900">
+                  Event Name
+                </label>
+                <input
+                  type="text"
+                  name="event"
+                  placeholder=""
+                  value={formData.event}
+                  onChange={handleChange}
+                  className="border-2 my-2 px-5 py-2 w-full text-gray-500 rounded-md"
+                  required
+                />
+              </div>
+
+
             </div>
             <div className="flex justify-center items-center">
               <button

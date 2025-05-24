@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Instance from "../AxiosConfig";
+import Instance from "../../AxiosConfig";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -14,10 +14,10 @@ function AddNewInventory() {
   const [partyName, setPartyName] = useState("");
   const [billNo, setBillNo] = useState("");
   const [billDate, setBillDate] = useState("");
-  const [billAmount, setBillAmount] = useState("");
-  const [gst , setGst] = useState("");
+  const [billAmount, setBillAmount] = useState(0);
+  const [gst,setGst]=useState("");
   const [threshold, setThreshold] = useState("");
-  const [bill, setBill] = useState(""); // file object
+  const [bill, setBill] = useState(null); // file object
 
   const navigate = useNavigate();
 
@@ -63,7 +63,7 @@ function AddNewInventory() {
       formData.append("billAmount", parseInt(billAmount, 10));
       formData.append("purchaseQty", parseInt(purchaseQty, 10));
       formData.append("qty", parseInt(qty, 10));
-      formData.append("bill", bill); // file
+      formData.append("image", bill); // file
 
       const response = await Instance.post("/add/purchase", formData, {
         headers: {
@@ -74,6 +74,7 @@ function AddNewInventory() {
       if (response.status === 200 || response.status === 201) {
         toast.success("Inventory added successfully!");
       }
+      console.log(formData);
     } catch (error) {
       console.error(
         "Add Inventory error:",
@@ -174,14 +175,11 @@ function AddNewInventory() {
                   type="number"
                       value={pricePerUnit}
                    onChange={(e) => setPricePerUnit(e.target.value)}
-                   required
                   ></input>
 
               </div>
-
-
               <div className="font-bold text-blue-900">
-                <label>GST Percentage </label>
+                <label>GST Percentage</label>
                 <input
                   className="border-2 text-gray-500 my-2 px-5 py-2 rounded-md w-full"
                   type="number"
@@ -190,8 +188,6 @@ function AddNewInventory() {
                   ></input>
 
               </div>
-
-
               <div className="font-bold text-blue-900">
                 <label>Bill Amount</label>
                 <input

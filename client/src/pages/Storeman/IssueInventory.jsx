@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Instance from "../AxiosConfig";
+import Instance from "../../AxiosConfig";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import styles
@@ -14,6 +14,7 @@ function IssueInventory() {
     requestByFaculty,
     requestQty,
     returnStatus,
+    event,
   } = location.state || {};
   // const [categories, setCategories] = useState([]);
   const [formData, setFormData] = useState({
@@ -23,6 +24,7 @@ function IssueInventory() {
     issuedToFaculty: requestByFaculty || "",
     issuedQty: requestQty || "",
     returnStatus: returnStatus || "",
+    event :event || "",
   });
   const [issuedInventory, setIssuedInventory] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -58,12 +60,14 @@ function IssueInventory() {
       issuedToFaculty,
       issuedQty,
       returnStatus,
+      event,
     } = formData;
     if (
       !category ||
       !itemName ||
       !issuedToDept ||
       !issuedToFaculty ||
+      !event ||
       Number(issuedQty) <= 0
     ) {
       toast.error(
@@ -85,6 +89,7 @@ function IssueInventory() {
           issuedToFaculty: requestByFaculty,
           issuedQty: requestQty,
           returnStatus: returnStatus,
+          event:event,
         });
         navigate("/issue-inventory");
       }
@@ -180,6 +185,22 @@ function IssueInventory() {
                 />
               </div>
 
+  <div className="font-bold text-blue-900">
+                <label htmlFor="event text-blue-900">
+                  Event Name
+                </label>
+                <input
+                  type="text"
+                  name="event"
+                  placeholder=""
+                  value={formData.event}
+                  onChange={handleChange}
+                  className="border-2 my-2 px-5 py-2 w-full text-gray-500 rounded-md"
+                  disabled
+                />
+              </div>
+
+
               <div className="font-bold text-blue-900">
                 <label htmlFor="returnStatus text-blue-900">
                   Return Status
@@ -216,6 +237,7 @@ function IssueInventory() {
                     issuedToFaculty: "",
                     issuedQty: "",
                     returnStatus: "",
+                    event:"",
                   })
                 }
               >

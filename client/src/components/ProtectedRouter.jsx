@@ -37,7 +37,7 @@ function ProtectedRoute({ children,allowedRoles }) {
     return <Navigate to="/login" replace />;
   }
   if(allowedRoles && !allowedRoles.includes(role)){
-    return <Navigate to="/" replace />;
+    return <Navigate to="/inventory-table" replace />;
   }
   return children;
 }

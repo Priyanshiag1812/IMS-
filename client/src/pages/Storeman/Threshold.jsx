@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Instance from "../AxiosConfig";
+import Instance from "../../AxiosConfig";
 
 const Threshold = () => {
   const [inventory, setInventory] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+
+
+  
 
   useEffect(() => {
     Instance.get("/add/getTable")
@@ -105,3 +109,5 @@ const Threshold = () => {
 };
 
 export default Threshold;
+
+

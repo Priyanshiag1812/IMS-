@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Instance from "../AxiosConfig";
+import Instance from "../../AxiosConfig";
 import { useNavigate } from "react-router-dom";
 
 function FacultyIssueInventoryTable() {
@@ -49,8 +49,11 @@ function FacultyIssueInventoryTable() {
               <th className="border text-white px-4 py-2">Item Name</th>
               <th className="border text-white px-4 py-2">Category</th>
               <th className="border text-white px-4 py-2">Quantity</th>
+
               <th className="border text-white px-4 py-2">Issue Date</th>
               <th className="border text-white px-4 py-2">Faculty Name</th>
+                            <th className="border text-white px-4 py-2">Event Name</th>
+
               <th className="border text-white px-4 py-2">Return Status</th>
               <th className="border text-white px-4 py-2">Return</th>
             </tr>
@@ -65,7 +68,7 @@ function FacultyIssueInventoryTable() {
                         className="text-center bg-blue-100 text-black"
                       >
                         <td className="border border-blue-900 px-4 py-2">
-                          {categoryIndex} . {itemIndex + 1}
+                          {categoryIndex + 1} . {itemIndex + 1}
                         </td>
                         <td className="border border-blue-900 px-4 py-2">
                           {item.itemName}
@@ -82,6 +85,11 @@ function FacultyIssueInventoryTable() {
                         <td className="border border-blue-900 px-4 py-2">
                           {item.issuedToFaculty}
                         </td>
+
+  <td className="border border-blue-900 px-4 py-2">
+                          {item.event}
+                        </td>
+
                         <td className="border border-blue-900 px-4 py-2">
                           {item.returnStatus}
                         </td>
@@ -90,7 +98,8 @@ function FacultyIssueInventoryTable() {
                             className="bg-blue-700 text-white mx-2 px-5 py-2 rounded-md"
                             onClick={() =>
                               navigate("/faculty-return-inventory", {
-                                state: { category: category.category, ...item },
+                                 state: {  issuedItem: item,
+        category: category.category},
                               })
                             }
                           >

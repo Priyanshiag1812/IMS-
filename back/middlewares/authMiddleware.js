@@ -12,6 +12,8 @@ const authMiddleware =
       else if (tokenKey === "facultyToken") token = req.cookies.facultyToken;
       else if (tokenKey === "storemanToken") token = req.cookies.storemanToken;
       else if (tokenKey === "accountantToken") token = req.cookies.accountantToken;
+      else if (tokenKey === "superAdminToken") token = req.cookies.superAdminToken;
+
       if (token) {
         try {
           const decoded = jwt.verify(token, process.env.JWT_SECRET);

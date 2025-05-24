@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Instance from "../AxiosConfig";
+import Instance from "../../AxiosConfig";
 
-const InventoryTable = () => {
+const ModifyInventoryTable = () => {
   const [inventory, setInventory] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -29,12 +29,13 @@ const InventoryTable = () => {
     }
   };
 
-  const handleDelete = async (category, itemName) => {
+  const handleDelete = async (category, itemName , qty) => {
     try {
-      const response = await Instance.delete("/add/removeInventory", {
-        data: { category, itemName },
+      const response = await Instance.post("/add/delete-inventory", {
+        data: { category, itemName , qty  },
       });
       alert(response.data.message);
+
       fetchData();
     } catch (error) {
       console.error("Error deleting inventory item:", error);
@@ -98,7 +99,7 @@ const InventoryTable = () => {
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4 text-center text-black">
-        Inventory Table
+       Edit Inventory Table
       </h1>
 
       {/* Filters */}
@@ -150,7 +151,6 @@ const InventoryTable = () => {
                   <th className="border px-4 py-2">Item Name</th>
                   <th className="border px-4 py-2">Quantity</th>
                   <th className="border px-4 py-2">Status</th>
-                  <th className="border px-4 py-2">Purchase Details</th>
                   <th className="border px-4 py-2">Actions</th>
                 </tr>
               </thead>
@@ -170,33 +170,26 @@ const InventoryTable = () => {
                     >
                       {item.status}
                     </td>
-                    <td className="border text-black px-4 py-2">
-                      <button
-                        className="bg-yellow-500 text-white mx-2 px-5 py-2 rounded-md"
-                        onClick={() =>
-                          navigate("/purchase-table", {
-                            state: { category: item.category, ...item },
-                          })
-                        }
-                      >
-                        View
-                      </button>
-                    </td>
+                   
                     <td className="border  text-black px-4 py-2">
                       <button
-                        className="bg-green-700 text-white mx-1 px-5 py-2 rounded-md"
+                        className="bg-yellow-500 text-white mx-1 px-5 py-2 rounded-md"
                         onClick={() =>
-                          navigate("/restock-inventory", {
+                          navigate("/update-inventory", {
                             state: { category: item.category, ...item },
                           })
                         }
                       >
-                        Restock
+                        Update
                       </button>
                       <button
                         className="bg-blue-800 text-white px-5 py-2 rounded-md"
                         onClick={() =>
-                          handleDelete(item.category, item.name)
+                             handleDelete(item.category, item.name , item.qty)
+                          // navigate("/delete-inventory", {
+                          //    state: { category: item.category, ...item },
+                          // })
+                       
                         }
                       >
                         Delete
@@ -230,4 +223,4 @@ const InventoryTable = () => {
   );
 };
 
-export default InventoryTable;
+export default ModifyInventoryTable;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import Instance from "../AxiosConfig";
+import Instance from "../../AxiosConfig";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import styles
 
@@ -15,7 +15,7 @@ const RestockInventory = () => {
   const [updatedBillDate, setUpdatedBillDate] = useState("");
   const [updatedBillAmount, setUpdatedBillAmount] = useState("");
   const [updatedPricePerUnit, setUpdatedPricePerUnit] = useState("");
-  const [updatedBill, setUpdatedBill] = useState("");
+  const [updatedBill, setUpdatedBill] = useState(null);
   const [updatedGst, setUpdatedGst] = useState("");
 
     useEffect(() => {
@@ -25,8 +25,6 @@ const RestockInventory = () => {
         const gstAmount = parseFloat(updatedGst) || 0;
         setUpdatedBillAmount(qty * price + (qty * price * gstAmount) / 100);
       }, [updatedPurchaseQty, updatedPricePerUnit, updatedGst]);
-
-
 
   useEffect(() => {
     if (!category || !name) {
@@ -39,6 +37,8 @@ const RestockInventory = () => {
     e.preventDefault();
     try {
       await Instance.put("/add/restock-inventory", {
+        
+        // category:category,
         category:category,
         itemName:name,
         purchaseQty: updatedPurchaseQty,
@@ -49,13 +49,16 @@ const RestockInventory = () => {
         pricePerUnit: updatedPricePerUnit,
         qty:qty,
         bill:updatedBill,
-        gst :updatedGst
-      });
+        gst :updatedGst ,
+        
+      }
+      
+    );
 
       toast.success("Inventory Restocked successfully!");
     
-        window.location.reload();
-        navigate("/inventory-table");
+        // window.location.reload();
+        // navigate("/inventory-table");
       
     } catch (error) {
       console.error(
@@ -68,7 +71,7 @@ const RestockInventory = () => {
 
   return (
     <div className="wrapper">
-      {/* <ToastContainer /> */}
+       <ToastContainer /> 
       <div className="main flex items-start justify-center">
         <div className="add_inventory rounded-2xl bg-blue-100 w-4/5 m-auto my-8 px-10 py-8">
           <h1 className="text-blue-950 text-3xl font-bold text-center px-8 py-2">
@@ -190,9 +193,10 @@ const RestockInventory = () => {
                 <input
                   className="border-2 my-2 px-5 py-2 w-full text-gray-500"
                   type="file"
-                  value={updatedBill}
-                  onChange={(e) => setUpdatedBill(e.target.value)}
-                  required
+                  //  value={updatedBill}
+                  accept="image/*"
+                  onChange={(e) => setUpdatedBill(e.target.files[0])}
+                  
                 />
               </div>
             </div>

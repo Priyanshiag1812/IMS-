@@ -50,15 +50,10 @@ function Dashboard() {
                   Inventory Table
                 </li>
               </Link>
+
               <Link to="/add-new-inventory">
                 <li className={getNavLinkClass("/add-new-inventory")}>
                   Add Inventory
-                </li>
-              </Link>
-
-             <Link to="/update-inventory">
-                <li className={getNavLinkClass("/update-inventory")}>
-                  Update Inventory
                 </li>
               </Link>
 
@@ -67,14 +62,44 @@ function Dashboard() {
                   View Request
                 </li>
               </Link>
+
+
+                <Link to="/return-request-table">
+                <li className={getNavLinkClass("/return-request-table")}>
+                  Return Request
+                </li>
+              </Link>
+
               <Link to="/issue-inventory-table">
                 <li className={getNavLinkClass("/issue-inventory-table")}>
                   Issued Inventories
                 </li>
               </Link>
+
+                  <Link to="/modify-inventory-table">
+                <li className={getNavLinkClass("/modify-inventory-table")}>
+                 Edit Inventory
+                </li>
+              </Link>
+
+              
+                  <Link to="/modify-request-table">
+                <li className={getNavLinkClass("/modify-request-table")}>
+                 Modify Request Table
+                </li>
+              </Link>
+
+                 <Link to="/updated-inventory-table">
+                <li className={getNavLinkClass("/updated-inventory-table")}>
+                 Updated Inventory Table
+                </li>
+              </Link>
+              
               <Link to="/threshold">
                 <li className={getNavLinkClass("/threshold")}>Threshold</li>
               </Link>
+
+            
               <Link to="/summary">
                 <li className={getNavLinkClass("/summary")}>Summary</li>
               </Link>
@@ -99,16 +124,116 @@ function Dashboard() {
                   Issued Inventories
                 </li>
               </Link>
-              <Link to="/update-inventory">
-                <li className={getNavLinkClass("/update-inventory")}>
-                  Update Inventory
+
+               <Link to="/updated-inventory-table">
+                <li className={getNavLinkClass("/updated-inventory-table")}>
+                 Updated Inventory Table
                 </li>
               </Link>
+
+              
               <Link to="/summary">
                 <li className={getNavLinkClass("/summary")}>Summary</li>
               </Link>
             </>
           )}
+
+
+
+{/* Super Admin Access */}
+          {role === "superAdmin" && (
+            <>
+ <Link to="/inventory-table">
+                <li className={getNavLinkClass("/inventory-table")}>
+                  Inventory Table
+                </li>
+              </Link>
+
+              {/* <Link to="/add-new-inventory">
+                <li className={getNavLinkClass("/add-new-inventory")}>
+                  Add Inventory
+                </li>
+              </Link> */}
+
+              <Link to="/request-inventory-table">
+                <li className={getNavLinkClass("/request-inventory-table")}>
+                  View Request
+                </li>
+              </Link>
+
+
+                <Link to="/return-request-table">
+                <li className={getNavLinkClass("/return-request-table")}>
+                  Return Request
+                </li>
+              </Link>
+
+              <Link to="/issue-inventory-table">
+                <li className={getNavLinkClass("/issue-inventory-table")}>
+                  Issued Inventories
+                </li>
+              </Link>
+
+                  <Link to="/modify-inventory-table">
+                <li className={getNavLinkClass("/modify-inventory-table")}>
+                 Edit Inventory
+                </li>
+              </Link>
+
+              
+                  <Link to="/modify-request-table">
+                <li className={getNavLinkClass("/modify-request-table")}>
+                 Modify Request Table
+                </li>
+              </Link>
+
+                 {/* <Link to="/updated-inventory-table">
+                <li className={getNavLinkClass("/updated-inventory-table")}>
+                 Updated Inventory Table
+                </li>
+              </Link>
+              
+              <Link to="/threshold">
+                <li className={getNavLinkClass("/threshold")}>Threshold</li>
+              </Link> */}
+
+            
+              {/* <Link to="/summary">
+                <li className={getNavLinkClass("/summary")}>Summary</li>
+              </Link> */}
+            
+              {/* <Link to="/admin-inventory-table">
+                <li className={getNavLinkClass("/admin-inventory-table")}>
+                  Inventory Table
+              //   </li>
+              </Link>
+               */}
+              <Link to="/admin-request-table">
+                <li className={getNavLinkClass("/admin-request-table")}>
+                  View Requests
+                </li>
+              </Link>
+              <Link to="/issue-inventory-table">
+                <li className={getNavLinkClass("/issue-inventory-table")}>
+                  Issued Inventories
+                </li>
+              </Link>
+
+               {/* <Link to="/updated-inventory-table">
+                <li className={getNavLinkClass("/updated-inventory-table")}>
+                 Updated Inventory Table
+                </li>
+              </Link>
+
+              
+              <Link to="/summary">
+                <li className={getNavLinkClass("/summary")}>Summary</li>
+              </Link> */}
+            </>
+          )}
+
+
+
 
           {/* Faculty Access */}
           {role === "faculty" && (

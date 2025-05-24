@@ -9,6 +9,7 @@ import adminRoutes from "./routes/adminRoutes.js";
 import facultyRoutes from "./routes/facultyRoutes.js";
 import accountantRoutes from "./routes/accountantRoutes.js";
 import storemanRoutes from "./routes/storemanRoutes.js";
+import superAdminRoutes from "./routes/superAdminRoutes.js";
 import cloudinary from "cloudinary";
 
 dotenv.config();
@@ -32,12 +33,11 @@ app.use(cookieParser());
 app.use(express.json());
 
 
-
-
 app.use("/auth", authRouts);
 app.use("/auth/admin", adminRoutes);
 app.use("/auth/faculty", facultyRoutes);
 app.use("/auth/accountant", accountantRoutes);
+app.use("/auth/superAdmin", superAdminRoutes);
 app.use("/auth/storeman", storemanRoutes);
 app.use("/add", inventoryRoutes);
 

@@ -30,6 +30,12 @@ function Login() {
             navigate("/admin/dashboard");
             navigate("/admin-inventory-table");
             break;
+
+ case "superAdmin":
+            navigate("/admin/dashboard");
+            navigate("/admin-inventory-table");
+            break;
+            
           case "faculty":
             navigate("/faculty/dashboard");
             navigate("/faculty-request-inventory-table");

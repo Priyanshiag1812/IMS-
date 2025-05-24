@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from "react";
-import Instance from "../AxiosConfig";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { useNavigate } from "react-router-dom";
+import Instance from "../../AxiosConfig";
 
-function RequestInventoryTable() {
-  const navigate = useNavigate();
+function FacultyViewRequestTable() {
   const [viewRequestInventory, setViewRequestInventory] = useState([]);
 
   useEffect(() => {
@@ -44,11 +40,14 @@ function RequestInventoryTable() {
               <th className="border text-white px-4 py-2">S.No</th>
               <th className="border text-white px-4 py-2">Item Name</th>
               <th className="border text-white px-4 py-2">Category</th>
-              <th className="border text-white px-4 py-2">Department</th>
-              <th className="border text-white px-4 py-2">Qty</th>
+              <th className="border text-white px-4 py-2">Requested By</th>
+              <th className="border text-white px-4 py-2">Event</th>
+              <th className="border text-white px-4 py-2">Request Qty</th>
+              <th className="border text-white px-4 py-2">Requested Date</th>
               <th className="border text-white px-4 py-2">Required Date</th>
-              <th className="border text-white px-4 py-2">Reason</th>
-              <th className="border text-white px-4 py-2">Actions</th>
+              <th className="border text-white px-4 py-2">Status</th>
+
+
             </tr>
           </thead>
           <tbody>
@@ -58,7 +57,7 @@ function RequestInventoryTable() {
                   !category.requestItems ||
                   !Array.isArray(category.requestItems)
                 ) {
-                  return null;
+                  return null; // Skip this category if requestItems is not an array
                 }
                 return category.requestItems.map((item, itemIndex) => {
                   return (
@@ -76,44 +75,27 @@ function RequestInventoryTable() {
                         {category.category}
                       </td>
                       <td className="border border-blue-900 px-4 py-2">
-                        {item.requestByDept}
+                        {item.requestByFaculty}
+                      </td>
+                        <td className="border border-blue-900 px-4 py-2">
+                        {item.event}
                       </td>
                       <td className="border border-blue-900 px-4 py-2">
                         {item.requestQty}
                       </td>
 
+                      
+                      <td className="border border-blue-900 px-4 py-2">
+                        {formatDate(item.requestDate)}
+                      </td>
                       <td className="border border-blue-900 px-4 py-2">
                         {formatDate(item.requireDate)}
                       </td>
 
-                      <td className="border border-blue-900 px-4 py-2">
-                        {item.requestReason}
+<td className="border border-blue-900 px-4 py-2">
+                        
                       </td>
 
-                      <td className="border border-blue-900 px-1 py-2 ">
-                        <button
-                          className="bg-yellow-500 text-white mx-1 px-3 py-2 rounded-md"
-                  
-                        >
-                          Modify
-                        </button>
-                        <button
-                          className="bg-green-600 text-white mx-1 px-3 py-2 rounded-md"
-                          onClick={() =>
-                            navigate("/issue-inventory", {
-                              state: { category: category.category, ...item },
-                            })
-                          }
-                        >
-                          Approve
-                        </button>
-                          <button
-                          className="bg-red-600 text-white mx-1 px-3 py-2 rounded-md"
-                  
-                        >
-                          Decline 
-                        </button>
-                      </td>
                     </tr>
                   );
                 });
@@ -132,4 +114,4 @@ function RequestInventoryTable() {
   );
 }
 
-export default RequestInventoryTable;
+export default FacultyViewRequestTable;

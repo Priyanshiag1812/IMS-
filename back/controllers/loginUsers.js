@@ -31,7 +31,7 @@ export const loginUser = async (req, res) => {
     res.cookie(cookieName, token, {
       httpOnly: true,
       secure: true,
-      sameSite: "none",
+      sameSite: "strict",
       maxAge: 2 * 60 * 60 * 1000,
     });
 
@@ -44,7 +44,7 @@ export const loginUser = async (req, res) => {
 };
 
 export const checkAuth = (req, res) => {
-  const { adminToken, facultyToken, storemanToken, accountantToken } =
+  const { adminToken, facultyToken, storemanToken, accountantToken  , superAdminToken} =
     req.cookies;
 
   let token = null;
@@ -62,7 +62,13 @@ export const checkAuth = (req, res) => {
   } else if (accountantToken) {
     token = accountantToken;
     role = "accountant";
-  } else {
+  }else if (superAdminToken) {
+    token = superAdminToken;
+    role = "superAdmin";
+  } 
+  
+  
+  else {
     return res.status(401).json({ message: "No token found, please log in" });
   }
   try {
@@ -78,7 +84,7 @@ export const checkAuth = (req, res) => {
 };
 
 export const logOut = (req, res) => {
-  const { adminToken, facultyToken, storemanToken, accountantToken } =
+  const { adminToken, facultyToken, storemanToken, accountantToken , superAdminToken } =
     req.cookies;
   let role = null;
 
@@ -90,7 +96,12 @@ export const logOut = (req, res) => {
     role = "storeman";
   } else if (accountantToken) {
     role = "accountant";
-  } else {
+  }  else if (superAdminToken) {
+    role = "superAdmin";
+  }
+  
+  
+  else {
     return res.status(201).json({ message: "No token found, please log in" });
   }
   try {

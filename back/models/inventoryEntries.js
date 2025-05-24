@@ -10,7 +10,22 @@ const issuedItemSchema = new mongoose.Schema({
   },
   issuedToFaculty: String,
   issuedDate: { type: Date, default: Date.now },
+  returnDate: { type: Date },
+  returnQty:Number,
+  returnedDate: { type: Date , default :Date.now }, // date of the return form filled
+  event:String,
+  requestDate:{type :Date}
 });
+
+const updatedItemSchema = new mongoose.Schema ({
+  itemName:String ,
+  qty:Number,
+  updatedQty:Number,
+  threshold:Number,
+  updatedThreshold:Number,
+  reason:String,
+  DateOfUpdation: { type: Date, default: Date.now },
+})
 
 const requestItemSchema = new mongoose.Schema({
   itemName: String,
@@ -25,12 +40,16 @@ const requestItemSchema = new mongoose.Schema({
   requireDate: { type: Date },
   status: {
     type: String,
-    enum: ["Pending", "Approved", "Rejected"],
+    enum: ["Pending", "Approved", "Rejected" , "Modified"],
   },
   requestReason: String,
-  issuedQty: Number,
-  issuedDate: { type: Date },
-  returnDate: { type: Date },
+  event:String,
+  
+  modifyQty:Number,
+  modifyReason:String,
+  modifyDate: { type: Date, default: Date.now },
+
+
 });
 
 const purchaseItemSchema = new mongoose.Schema({
@@ -50,6 +69,13 @@ const purchaseItemSchema = new mongoose.Schema({
   bill: String, // Assuming this is a file path or URL to the bill document
 });
 
+const deleteItemSchema = new mongoose.Schema({
+  itemName: String,
+  qty: Number,
+  reason:String,
+  deleteDate: { type: Date, default: Date.now },
+});
+
 const itemSchema = new mongoose.Schema({
   name: String,
   qty: Number,
@@ -59,15 +85,22 @@ const itemSchema = new mongoose.Schema({
     enum: ["Available", "Low Stock", "Out of Stock"],
   },
   purchaseItems: [purchaseItemSchema], // Array of purchase items
+  updatedItems: [updatedItemSchema],
+
 });
 
 const inventorySchema = new mongoose.Schema({
   category: String,
   items: [itemSchema],
+  deleteItems:[deleteItemSchema],
   issuedItems: [issuedItemSchema],
   requestItems: [requestItemSchema],
-  purchaseItems: [purchaseItemSchema],
 });
+
+
+
+
+
 
 const inventoryEntries = mongoose.model("Inventory", inventorySchema);
 export default inventoryEntries;
