@@ -30,7 +30,6 @@ export const getPurchaseInventory = async (req, res) => {
   }
 };
 
-
 export const purchaseInventory = async (req, res) => {
   try {
     const {
@@ -61,11 +60,9 @@ export const purchaseInventory = async (req, res) => {
     let inventory = await inventoryEntries.findOne({ category });
 
     if (!inventory) {
-      return res
-        .status(404)
-        .json({
-          message: "Category not found. Please create the category first.",
-        });
+      return res.status(404).json({
+        message: "Category not found. Please create the category first.",
+      });
     }
     // Find the item
     let item = inventory.items.find((i) => i.name === itemName);
@@ -141,85 +138,190 @@ export const purchaseInventory = async (req, res) => {
   }
 };
 
+// export const requestInventoryFaculty = async (req, res) => {
+//   try {
+//     const {
+//       facultyName,
+//       department,
+//       requestReason,
+//       event,
+//       requestItems
+//     } = req.body.formData;
+
+//     if (
+//       !event ||
+//       !facultyName ||
+//       !department ||
+//       !requestReason ||
+//       !requestItems ||
+//       requestItems.length === 0 ||
+//       requestItems.some(
+//         (requestItem) =>
+//          !requestItem.category &&
+//           !requestItem.itemName &&
+//           !requestItem.requestQty &&
+//           !requestItem.returnStatus &&
+//           !requestItem.requireDate
+//       )
+//     ) {
+//       return res.status(400).json({ message: "All fields are required" });
+//     }
+
+//     // 🔁 Loop through each requestItem and save to DB
+//     for (const requestItem of requestItems) {
+//       const { category, itemName, requestQty, returnStatus, requireDate } = requestItem;
+
+//       let requestInventory = await inventoryEntries.findOne({ category });
+//       if (!requestInventory)
+        
+        
+//         {
 
 
+// // const requestInventory = await inventoryEntries.find(
+// //       { "multiRequestItems.0": { $exists: true } },
+// //       "category multiRequestItems"
+// //     );
 
-//request inventory form
+
+//         // If the category does not exist, create a new one
+//         // requestInventory = await inventoryEntries({
+//         //   category,
+//         //    multiRequestItems: {
+//         //     facultyName,
+//         //     department,
+//         //     event,
+//         //     requestDate: Date.now(),
+//         //     status: "Pending",
+//         //     requestReason,
+//         //     requestItems: [
+//         //       {
+//         //         category,
+//         //         itemName,
+//         //         requestQty,
+//         //         returnStatus,
+//         //         requireDate,
+//         //       },
+//         //     ],
+//         //   }
+          
+//         // });
+//         // await requestInventory.save();
+//       }
+
+
+//     // if (!requestInventory) {
+//     //   return res.status(404).json({
+//     //     message: "Category not found. Please create the category first.",
+//     //   });
+//     // }
+
+//       // const requestInventory = await inventoryEntries.findOne({ category });
+
+//       // if (!requestInventory) {
+//       //   return res.status(404).json({ message: `Category not found for category: ${category}` });
+//       // }
+
+//       requestInventory.multiRequestItems.push({
+//         facultyName,
+//         department,
+//         event,
+//         requestDate: Date.now(),
+//         status: "Pending",
+//         requestReason,
+//         requestItems: [{ category, itemName, requestQty, returnStatus, requireDate }],
+//       });
+
+//       await requestInventory.save();
+//     }
+
+//     res.status(200).json({ message: "Item requests submitted successfully!" });
+
+//   } catch (error) {
+//     console.error("Error requesting inventory:", error);
+//     res.status(500).json({ message: "Server error", error: error.message });
+//   }
+// };
+
 export const requestInventoryFaculty = async (req, res) => {
   try {
     const {
-      category,
-      itemName,
-      requestByDept,
-      requestQty,
-      returnStatus,
-      requestByFaculty,
-      requireDate,
+      facultyName,
+      department,
       requestReason,
       event,
-    } = req.body;
+      requestItems
+    } = req.body.formData;
 
+    //  Validate input
     if (
-      !category ||
-      !itemName ||
-      !requestByDept ||
-      !requestQty == undefined ||
-      !requestByFaculty ||
-      !requireDate ||
-      !requestReason ||
       !event ||
-      !returnStatus
+      !facultyName ||
+      !department ||
+      !requestReason ||
+      !requestItems ||
+      requestItems.length === 0 ||
+      requestItems.some(
+        (item) =>
+          !item.category ||
+          !item.itemName ||
+          !item.requestQty ||
+          !item.returnStatus ||
+          !item.requireDate
+      )
     ) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    const requestInventory = await inventoryEntries.findOne({ category });
+    //  Group items by category
+    const categoryMap = {};
 
-    if (!requestInventory) {
-      return res.status(404).json({ message: "Category not found" });
+    for (const item of requestItems) {
+      const { category } = item;
+
+      if (!categoryMap[category]) {
+        categoryMap[category] = [];
+      }
+      categoryMap[category].push(item);
     }
 
-    const item = requestInventory.items.find((i) => i.name === itemName);
+    // For each category, push the full grouped request
+    for (const category in categoryMap) {
+      let requestInventory = await inventoryEntries.findOne({ category });
 
-    if (!item) {
-      return res.status(404).json({ message: "Item not found" });
+      if (!requestInventory) {
+        return res.status(404).json({
+          message: `Category not found: ${category}`
+        });
+      }
+
+      requestInventory.multiRequestItems.push({
+        facultyName,
+        department,
+        event,
+        requestDate: Date.now(),
+        status: "Pending",
+        requestReason,
+        requestItems: categoryMap[category], // all items for this category
+      });
+
+      await requestInventory.save();
     }
 
-    if (item.qty < requestQty) {
-      return res.status(400).json({ message: "Not enough stock available" });
-    }
+    res.status(200).json({ message: "Item requests submitted successfully!" });
 
-    requestInventory.requestItems.push({
-      itemName,
-      requestByDept,
-      requestQty,
-      returnStatus,
-      requestByFaculty,
-      requestDate: Date.now(), // Assuming you want to set the current date
-      requireDate,
-      requireDate,
-      requestReason,
-      event
-    });
-
-    item.status = item.qty > item.threshold ? "Available" : "Low Stock";
-
-    await requestInventory.save();
-
-    res
-      .status(200)
-      .json({ message: "Item request successfully!", requestInventory });
   } catch (error) {
     console.error("Error requesting inventory:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
+
 // getViewRequestInventory
 export const getViewRequestInventory = async (req, res) => {
   try {
     const viewRequestInventory = await inventoryEntries.find(
-      { "requestItems.0": { $exists: true } },
+      { "multiRequestItems.0": { $exists: true } },
       "category requestItems"
     );
     if (!viewRequestInventory || viewRequestInventory.length === 0) {
@@ -232,30 +334,19 @@ export const getViewRequestInventory = async (req, res) => {
   }
 };
 
-
-
-
-
-
 //return inventory form faculty
 export const returnInventoryFaculty = async (req, res) => {
   try {
-    const {
-      category,
-      itemName,
-      returnQty,
-      issuedQty,
-      issuedDate,
-      returnDate,
-    } = req.body;
+    const { category, itemName, returnQty, issuedQty, issuedDate, returnDate } =
+      req.body;
 
     if (
       !category ||
       !itemName ||
       !returnDate ||
       !issuedDate ||
-      !issuedQty ==undefined ||
-      !returnQty == undefined 
+      !issuedQty == undefined ||
+      !returnQty == undefined
     ) {
       return res.status(400).json({ message: "All fields are required" });
     }
@@ -273,16 +364,18 @@ export const returnInventoryFaculty = async (req, res) => {
     }
 
     if (item.issuedQty < returnQty) {
-      return res.status(400).json({ message: "Issued qty is less than return Qty" });
+      return res
+        .status(400)
+        .json({ message: "Issued qty is less than return Qty" });
     }
 
     returnInventory.issuedItems.push({
-    itemName,
-    returnDate,
-    issuedDate,
-    issuedQty,
-    returnedDate: Date.now(), // Assuming you want to set the current date
-    returnQty,
+      itemName,
+      returnDate,
+      issuedDate,
+      issuedQty,
+      returnedDate: Date.now(), // Assuming you want to set the current date
+      returnQty,
     });
 
     await returnInventory.save();
@@ -295,9 +388,6 @@ export const returnInventoryFaculty = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
-
-
-
 
 // getReturnRequestInventory
 export const getReturnRequestInventory = async (req, res) => {
@@ -316,13 +406,28 @@ export const getReturnRequestInventory = async (req, res) => {
   }
 };
 
-
 // Update Inventory Item
 export const updatedItem = async (req, res) => {
   try {
-    const { category, itemName, qty, threshold, reason ,updatedQty , updatedThreshold,  } = req.body;
+    const {
+      category,
+      itemName,
+      qty,
+      threshold,
+      reason,
+      updatedQty,
+      updatedThreshold,
+    } = req.body;
 
-    if (!category || !itemName || qty === undefined || updatedQty === undefined || threshold === undefined || updatedThreshold === undefined || !reason) {
+    if (
+      !category ||
+      !itemName ||
+      qty === undefined ||
+      updatedQty === undefined ||
+      threshold === undefined ||
+      updatedThreshold === undefined ||
+      !reason
+    ) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -338,28 +443,28 @@ export const updatedItem = async (req, res) => {
       return res.status(404).json({ message: "Item not found" });
     }
 
-
-    
-    const updatedItem={
-
+    const updatedItem = {
       itemName,
-      qty:qty,
-      threshold:threshold,
+      qty: qty,
+      threshold: threshold,
       updatedQty,
       updatedThreshold,
       reason,
-    }
+    };
     // Deduct the issued quantity from stock
     item.qty = updatedQty;
-    item.threshold= updatedThreshold;
+    item.threshold = updatedThreshold;
     // Add update record
-    item.updatedItems=item.updatedItems||[];
-    item.updatedItems.push(updatedItem)
-
-   
+    item.updatedItems = item.updatedItems || [];
+    item.updatedItems.push(updatedItem);
 
     // Update item status
-    item.status = item.qty === 0 ? "Out of Stock" :qty < item.threshold ? "Low Stock" : "Available";
+    item.status =
+      item.qty === 0
+        ? "Out of Stock"
+        : qty < item.threshold
+        ? "Low Stock"
+        : "Available";
 
     await inventory.save();
 
@@ -388,10 +493,9 @@ export const getUpdatedInventory = async (req, res) => {
   }
 };
 
-
-//restock inventory 
+//restock inventory
 export const restockInventory = async (req, res) => {
- try {
+  try {
     const {
       category,
       itemName,
@@ -402,22 +506,29 @@ export const restockInventory = async (req, res) => {
       purchaseQty,
       pricePerUnit,
       gst,
-      bill
+      bill,
     } = req.body;
-    
 
-
-
- if (!category || !itemName  || purchaseQty === undefined || !partyName || billAmount === undefined || gst === undefined || pricePerUnit === undefined || billNo === undefined || !billDate || !bill ) {
+    if (
+      !category ||
+      !itemName ||
+      purchaseQty === undefined ||
+      !partyName ||
+      billAmount === undefined ||
+      gst === undefined ||
+      pricePerUnit === undefined ||
+      billNo === undefined ||
+      !billDate ||
+      !bill
+    ) {
       return res.status(400).json({ message: "All fields are required" });
     }
-
 
     let billUrl = null;
 
     if (req.file) {
       try {
-      let billUrl = await uploadToCloudinary(req);
+        let billUrl = await uploadToCloudinary(req);
       } catch (uploadError) {
         console.error("Cloudinary upload error : , uploadError");
       }
@@ -427,11 +538,9 @@ export const restockInventory = async (req, res) => {
     let inventory = await inventoryEntries.findOne({ category });
 
     if (!inventory) {
-      return res
-        .status(404)
-        .json({
-          message: "Category not found. Please create the category first.",
-        });
+      return res.status(404).json({
+        message: "Category not found. Please create the category first.",
+      });
     }
     // Find the item
     let item = inventory.items.find((i) => i.name === itemName);
@@ -462,16 +571,15 @@ export const restockInventory = async (req, res) => {
       item.status = status;
       item.purchaseItems = item.purchaseItems || [];
       item.purchaseItems.push(purchaseItem);
-    } 
+    }
 
-await inventory.save();
+    await inventory.save();
 
     res.status(200).json({ message: "Restocked added successfully" });
   } catch (error) {
     console.error("Error in restock Inventory:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
-
 };
 
 // issueInventroy
@@ -643,34 +751,33 @@ export const deleteRequestInventory = async (req, res) => {
   }
 };
 
-
 // Delete Inventory Item
 export const deleteItem = async (req, res) => {
   try {
-    const { category, itemName , qty  } = req.body;
+    const { category, itemName, qty } = req.body;
     let inventory = await inventoryEntries.findOne({ category });
     if (!inventory) {
       return res.status(404).json({ message: "Category not found" });
     }
 
-
-const itemIndex = inventory.items.findIndex(item => item.itemName === itemName);
+    const itemIndex = inventory.items.findIndex(
+      (item) => item.itemName === itemName
+    );
     if (itemIndex === -1) {
       return res.status(404).json({ message: "Item not found in category" });
     }
 
     const itemToDelete = inventory.items[itemIndex];
     inventory.deleteItems.push({
-      itemName:itemToDelete.itemName,
-      qty:itemToDelete.qty, 
+      itemName: itemToDelete.itemName,
+      qty: itemToDelete.qty,
       // reason,
       deleteDate: Date.now(),
     });
 
-     inventory = inventory.items.splice(itemIndex, 1);
+    inventory = inventory.items.splice(itemIndex, 1);
 
     await inventory.save();
-  
 
     res.status(200).json({
       message: "Item delete successfully and stored in delete inventory!",
@@ -678,33 +785,26 @@ const itemIndex = inventory.items.findIndex(item => item.itemName === itemName);
         itemName: itemToDelete.itemName,
         qty: itemToDelete.qty,
         // reason: reason || "Item deleted via endpoint"
-      }
+      },
     });
   } catch (error) {
     console.error("Error deleting inventory item:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
-}
-
-
+};
 
 //modify request inventory form storeman
 export const modifyRequest = async (req, res) => {
   try {
-    const {
-      category,
-      itemName,
-      requestQty,
-      modifyQty,
-      modifyReason,
-    } = req.body;
+    const { category, itemName, requestQty, modifyQty, modifyReason } =
+      req.body;
 
     if (
       !category ||
       !itemName ||
       !modifyReason ||
-      !modifyQty ==undefined ||
-      !requestQty == undefined 
+      !modifyQty == undefined ||
+      !requestQty == undefined
     ) {
       return res.status(400).json({ message: "All fields are required" });
     }
@@ -722,22 +822,27 @@ export const modifyRequest = async (req, res) => {
     }
 
     if (item.requestQty < modifyQty) {
-      return res.status(400).json({ message: "Request qty is less than modified Qty" });
+      return res
+        .status(400)
+        .json({ message: "Request qty is less than modified Qty" });
     }
 
     modifyRequestInventory.requestItems.push({
-    itemName,
-    requestQty,
-    modifyQty,
-    modifyReason,
-    modifyDate: Date.now(), // Assuming you want to set the current date
+      itemName,
+      requestQty,
+      modifyQty,
+      modifyReason,
+      modifyDate: Date.now(), // Assuming you want to set the current date
     });
 
     await modifyRequestInventory.save();
 
     res
       .status(200)
-      .json({ message: "Item modifying successfully!", modifyRequestInventory });
+      .json({
+        message: "Item modifying successfully!",
+        modifyRequestInventory,
+      });
   } catch (error) {
     console.error("Error modifying inventory:", error);
     res.status(500).json({ message: "Server error", error: error.message });
@@ -752,7 +857,9 @@ export const getModifyRequestInventory = async (req, res) => {
       "category requestItems"
     );
     if (!modifyRequestInventory || modifyRequestInventory.length === 0) {
-      return res.status(404).json({ message: "No modify Request inventory found." });
+      return res
+        .status(404)
+        .json({ message: "No modify Request inventory found." });
     }
     res.status(200).json(modifyRequestInventory);
   } catch (error) {

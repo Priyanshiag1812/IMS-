@@ -85,13 +85,13 @@ router.put(
 
 
 router.post(
-  "/faculty-request-Inventory",
+  "/faculty-request-inventory",
   authMiddleware("facultyToken", "adminToken","superAdminToken"),
   requestInventoryFaculty
 );
 
 router.post(
-  "/faculty-return-Inventory",
+  "/faculty-return-inventory",
   authMiddleware("facultyToken", "adminToken" ,"superAdminToken"),
   returnInventoryFaculty
 );

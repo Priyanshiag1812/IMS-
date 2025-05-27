@@ -238,13 +238,13 @@ function Dashboard() {
           {/* Faculty Access */}
           {role === "faculty" && (
             <>
-              <Link to="/faculty-request-Inventory-table">
+              <Link to="/faculty-request-inventory">
                 <li
                   className={getNavLinkClass(
-                    "/faculty-request-Inventory-table"
+                    "/faculty-request-inventory"
                   )}
                 >
-                  Request Inventory Table
+                  Request Inventory 
                 </li>
               </Link>
               <Link to="/faculty-view-request-table">

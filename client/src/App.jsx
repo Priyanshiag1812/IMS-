@@ -17,7 +17,7 @@ import First from "./pages/First";
 import ProtectedRoute from "./components/ProtectedRouter";
 import SignUp from "./pages/SignUp.jsx";
 import PurchaseTable from "./pages/Storeman/PurchaseTable.jsx";
-import FacultyRequestInventoryTable from "./pages/Faculty/FacultyRequestInventoryTable.jsx";
+// import FacultyRequestInventoryTable from "./pages/Faculty/FacultyRequestInventoryTable.jsx";
 import FacultyIssueInventoryTable from "./pages/Faculty/FacultyIssueInventoryTable.jsx";
 import FacultyViewRequestTable from "./pages/Faculty/FacultyViewRequestTable.jsx";
 import AdminRequestTable from "./pages/Admin/AdminRequestTable.jsx";
@@ -194,14 +194,14 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
-      {
-        path: "/faculty-request-inventory-table",
-        element: (
-          <ProtectedRoute allowedRoles={["admin", "faculty", "superAdmin"]}>
-            <FacultyRequestInventoryTable />
-          </ProtectedRoute>
-        ),
-      },
+      // {
+      //   path: "/faculty-request-inventory-table",
+      //   element: (
+      //     <ProtectedRoute allowedRoles={["admin", "faculty", "superAdmin"]}>
+      //       <FacultyRequestInventoryTable />
+      //     </ProtectedRoute>
+      //   ),
+      // },
       {
         path: "/admin-request-table",
         element: (
