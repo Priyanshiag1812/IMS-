@@ -322,7 +322,7 @@ export const getViewRequestInventory = async (req, res) => {
   try {
     const viewRequestInventory = await inventoryEntries.find(
       { "multiRequestItems.0": { $exists: true } },
-      "category requestItems"
+      "category multiRequestItems"
     );
     if (!viewRequestInventory || viewRequestInventory.length === 0) {
       return res.status(404).json({ message: "No request inventory found." });
