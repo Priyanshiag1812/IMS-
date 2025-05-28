@@ -1,21 +1,36 @@
 import mongoose from "mongoose";
 
 const issuedItemSchema = new mongoose.Schema({
-  itemName: String,
-  issuedToDept: String,
-  issuedQty: Number,
-  returnStatus: {
-    type: String,
-    enum: ["Returnable", "Non Returnable"],
-  },
-  issuedToFaculty: String,
-  issuedDate: { type: Date, default: Date.now },
-  returnDate: { type: Date },
-  returnQty: Number,
+  requestId: { type: mongoose.Schema.Types.ObjectId, ref: "multiRequestItems" },
+  issuedItems: [{
+    itemName: String,
+    issuedQty: Number,
+    returnStatus: { type: String, enum: ["Returnable", "Non Returnable"] },
+    issuedToFaculty: String,
+    issuedToDept: String,
+    issuedDate: { type: Date, default: Date.now },
+    returnDate: Date,
+    returnQty: Number,
   returnedDate: { type: Date, default: Date.now }, // date of the return form filled
-  event: String,
-  requestDate: { type: Date },
+  }]
 });
+
+// const issuedItemSchema = new mongoose.Schema({
+//   itemName: String,
+//   issuedToDept: String,
+//   issuedQty: Number,
+//   returnStatus: {
+//     type: String,
+//     enum: ["Returnable", "Non Returnable"],
+//   },
+//   issuedToFaculty: String,
+//   issuedDate: { type: Date, default: Date.now },
+//   returnDate: { type: Date },
+//   returnQty: Number,
+//   returnedDate: { type: Date, default: Date.now }, // date of the return form filled
+//   event: String,
+//   requestDate: { type: Date },
+// });
 
 const updatedItemSchema = new mongoose.Schema({
   itemName: String,
@@ -50,9 +65,32 @@ const multiRequestItemSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ["Pending", "Approved", "Rejected", "Modified"],
+    default: "Pending"
   },
    // Array of request items
    requestItems: [requestItemSchema],
+});
+
+
+const approvalItemSchema = new mongoose.Schema({
+  requestId: { type: mongoose.Schema.Types.ObjectId, ref: "multiRequestItems" },
+  storemanAction: {
+    status: { type: String, enum: ["Pending", "Modified", "Accepted", "Declined"], default: "Pending" },
+    modifiedItems: [{
+      itemName: String,
+      requestQty: Number,
+      modifiedQty: Number,
+      modifiedReason: String,
+      modifiedDate: { type: Date, default: Date.now }
+    }],
+    actionDate: Date,
+  },
+  adminAction: {
+    status: { type: String, enum: ["Pending", "Approved", "Declined"], default: "Pending" },
+    adminName: String,
+    approvalDate: { type: Date, default: Date.now },
+    remarks: String,
+  }
 });
 
 
@@ -121,6 +159,9 @@ const inventorySchema = new mongoose.Schema({
   issuedItems: [issuedItemSchema],
   // requestItems: [requestItemSchema],
   multiRequestItems: [multiRequestItemSchema],
+  approvalItems: [approvalItemSchema],
+  
+
 });
 
 const inventoryEntries = mongoose.model("Inventory", inventorySchema);

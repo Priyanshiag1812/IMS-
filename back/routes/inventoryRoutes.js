@@ -17,6 +17,8 @@ import {
   deleteItem,
   getPurchaseInventory,
   getUpdatedInventory,
+  getApprovalRequestInventory,
+  approvalRequestInventory,
 } from "../controllers/inventoryController.js";
 import authMiddleware from "../middlewares/authMiddleware.js";
 import upload from "../middlewares/Upload.js";
@@ -108,6 +110,20 @@ router.get(
   authMiddleware("storemanToken" ,"adminToken" ,"superAdminToken"),
   getModifyRequestInventory
 );
+
+
+
+router.post(
+  "/approval-request-inventory",
+  authMiddleware("storemanToken", "adminToken" ,"superAdminToken"),
+  approvalRequestInventory
+)
+
+
+router.get(
+  "/getApprovalRequestInventory",
+  authMiddleware("storemanToken", "adminToken" ,"superAdminToken"),
+  getApprovalRequestInventory)
 
 
 router.post(

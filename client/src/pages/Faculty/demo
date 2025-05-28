@@ -6,33 +6,10 @@ import "react-toastify/dist/ReactToastify.css";
 
 const FacultyRequestInventory = () => {
   const navigate = useNavigate();
+
   const [categories, setCategories] = useState([]);
   const [filteredItems, setFilteredItems] = useState({});
-  const [allItems, setAllItems] = useState([]);
-  const [fname, setFname] = useState("");
-  
-
-useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const res = await Instance.get("/auth/checkToken", {
-        withCredentials: true,
-      });
-      setFname(res.data.fname);
-      console.log(res.data.fname);
-    } catch (error) {
-      console.error("Error fetching user first name:", error);
-    }
-  };
-
-const getDepartmentHeading = () => {
-    if (!fname) return "Faculty Request Inventory";
-    return `${fname.charAt(0).toUpperCase() + fname.slice(1)} Request Inventory`;
-  };
-
+  const [allItems, setAllItems] = useState([]); 
 
   const [formData, setFormData] = useState({
     facultyName: "",
@@ -50,8 +27,7 @@ const getDepartmentHeading = () => {
     ],
   });
 
-
-useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await Instance.get("/add/getTable");
@@ -94,26 +70,23 @@ useEffect(() => {
     fetchData();
   }, []);
 
-
-
-  //  Update form data
   const handleChange = (e, index = null) => {
     const { name, value } = e.target;
+
     if (index !== null) {
       const updatedItems = [...formData.requestItems];
       updatedItems[index][name] = value;
 
- if (name === "category") {
+      if (name === "category") {
         updatedItems[index].itemName = "";
       }
-      
+
       setFormData((prev) => ({ ...prev, requestItems: updatedItems }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
-  //  Add item row
   const handleAddItem = () => {
     setFormData((prev) => ({
       ...prev,
@@ -129,28 +102,22 @@ useEffect(() => {
       ],
     }));
   };
-  //  Remove item row
+
   const handleRemoveItem = (index) => {
     const updatedItems = formData.requestItems.filter((_, i) => i !== index);
     setFormData((prev) => ({ ...prev, requestItems: updatedItems }));
   };
 
-  //  Submit request
   const handleRequestInventory = async (e) => {
     e.preventDefault();
-    const { facultyName, department, event, requestReason, requestItems } =
-      formData;
+    const { facultyName, department, event, requestReason, requestItems } = formData;
 
-    // Validate main form
     if (!facultyName || !department || !event || !requestReason) {
-      toast.error("Please fill in all required fields upper section.");
+      toast.error("Please fill in all required fields.");
       return;
     }
 
-    // Validate each item
     for (const item of requestItems) {
-      // Check if all fields are filled
-
       if (
         !item.category ||
         !item.itemName ||
@@ -158,7 +125,7 @@ useEffect(() => {
         !item.returnStatus ||
         !item.requireDate
       ) {
-        toast.error("Please complete all item fields .");
+        toast.error("Please complete all item fields.");
         return;
       }
 
@@ -167,7 +134,7 @@ useEffect(() => {
         return;
       }
 
-      if (new Date(item.requireDate) < new Date()) {
+      if (new Date(item.requireDate) < new Date(new Date().toDateString())) {
         toast.error("Required date cannot be in the past.");
         return;
       }
@@ -180,13 +147,7 @@ useEffect(() => {
           department,
           event,
           requestReason,
-          requestItems: requestItems.map((item) => ({
-            category: item.category,
-            itemName: item.itemName,
-            requestQty: item.requestQty,
-            returnStatus: item.returnStatus,
-            requireDate: item.requireDate,
-          })),
+          requestItems,
         },
       });
 
@@ -203,12 +164,11 @@ useEffect(() => {
       <div className="pb-2 px-4 max-w-5xl mx-auto my-7 bg-white relative shadow-md rounded-xl">
         <ToastContainer />
         <h2 className="text-2xl font-bold mb-4 text-center text-blue-800">
-         {getDepartmentHeading()}
+          Faculty Inventory Request
         </h2>
 
         <form onSubmit={handleRequestInventory} className="space-y-1 pt-6">
           <div className="flex gap-4 flex-wrap">
-            <label className="text-black">Faculty Name</label>
             <input
               type="text"
               name="facultyName"
@@ -219,7 +179,6 @@ useEffect(() => {
               className="border text-black border-gray-400 rounded-md px-4 py-2 w-full md:w-[32%]"
             />
 
-            <label className="text-black">Department Name</label>
             <input
               type="text"
               name="department"
@@ -230,8 +189,6 @@ useEffect(() => {
               className="border text-black border-gray-400 rounded-md px-4 py-2 w-full md:w-[32%]"
             />
 
-            <label className="text-black">Event Name</label>
-
             <input
               type="text"
               name="event"
@@ -241,8 +198,6 @@ useEffect(() => {
               required
               className="border text-black border-gray-400 rounded-md px-4 py-2 w-full md:w-[32%]"
             />
-
-            <label className="text-black">Reason for Request</label>
 
             <input
               type="text"
@@ -263,19 +218,8 @@ useEffect(() => {
               className="border p-4 rounded-md bg-blue-100 text-black space-y-3 relative"
             >
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-1">
-                {/* <input
-                  name="category"
-                  value={requestItem.category}
-                  onChange={(e) => handleChange(e, index)}
-                  placeholder="Category"
-                  required
-                  className="border text-black border-gray-400 rounded-md px-4 py-2"
-                ></input> */}
 
-
-
-
-  <select
+                <select
                   name="category"
                   value={requestItem.category}
                   onChange={(e) => handleChange(e, index)}
@@ -305,22 +249,6 @@ useEffect(() => {
                     </option>
                   ))}
                 </select>
-
-                {/* <input
-                  name="itemName"
-                  value={requestItem.itemName}
-                  onChange={(e) => handleChange(e, index)}
-                  placeholder="Item Name"
-                  required
-                  className="border text-black border-gray-400 rounded-md px-4 py-2"
-                > */}
-                  {/* <option value="">Select Item</option>
-                  {(items[item.category] || []).map((itemName) => (
-                    <option key={itemName} value={itemName}>
-                      {itemName}
-                    </option>
-                  ))} */}
-                {/* </input> */}
 
                 <input
                   type="number"

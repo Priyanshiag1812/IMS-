@@ -793,6 +793,13 @@ export const deleteItem = async (req, res) => {
   }
 };
 
+
+
+
+
+
+
+
 //modify request inventory form storeman
 export const modifyRequest = async (req, res) => {
   try {
@@ -864,6 +871,165 @@ export const getModifyRequestInventory = async (req, res) => {
     res.status(200).json(modifyRequestInventory);
   } catch (error) {
     console.error("Error fetching modify request inventory:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+
+
+
+
+
+
+//modify request inventory form storeman
+// export const storemanApprovalRequest = async (req, res) => {
+//   try {
+//     const { 
+//         itemName,
+//         requestQty,
+//         modifiedReason,     
+//         modifiedQty
+//        } =
+//       req.body.formData;
+
+//     if (
+//        !itemName||
+//        requestQty ==undefined ||
+//       !modifiedReason||     
+//        !modifiedQty==undefined
+
+//     ) {
+//       return res.status(400).json({ message: "All fields are required" });
+//     }
+
+//     const storemanApprovalRequest = await inventoryEntries.findOne({ category });
+
+//     if (!storemanApprovalRequest) {
+//       return res.status(404).json({ message: "Category not found" });
+//     }
+
+//     // const item = storemanApprovalRequest.items.find((i) => i.name === itemName);
+
+//     // if (!item) {
+//     //   return res.status(404).json({ message: "Item not found" });
+//     // }
+
+//     if (item.requestQty < modifyQty) {
+//       return res
+//         .status(400)
+//         .json({ message: "Modified qty is more than requested Qty" });
+//     }
+
+//     storemanApprovalRequest.approvalItems.push({
+//       requestItems,
+//       storemanAction: {
+//         status: "Approved",
+//         modifiedItems: [{
+//           itemName,
+//           requestQty,
+//           modifiedQty,
+//           modifiedReason,
+//           modifyDate: Date.now(),
+//         }]
+//       }
+//     });
+
+//     await storemanApprovalRequest.save();
+
+//     res
+//       .status(200)
+//       .json({
+//         message: "Item modifying approved by storeman successfully!",
+//         storemanApprovalRequest,
+//       });
+//   } catch (error) {
+//     console.error("Error modifying and approving inventory:", error);
+//     res.status(500).json({ message: "Server error", error: error.message });
+//   }
+// };/
+
+
+export const approvalRequestInventory = async (req, res) => {
+  try {
+    const {
+      facultyName,
+      event,
+      category,
+      itemName,
+      requestQty,
+      requireDate,
+      requestReason,
+      returnStatus,
+      modifiedQty,
+      modifiedReason
+    } = req.body;
+
+    const inventory = await inventoryEntries.findOne({ "multiRequestItems.facultyName": facultyName });
+
+    if (!inventory) return res.status(404).json({ message: "Inventory not found" });
+
+    const multiRequest = inventory.multiRequestItems.find(
+      r => r.facultyName === facultyName && r.event === event
+    );
+
+    if (!multiRequest) return res.status(404).json({ message: "Request not found" });
+
+    const requestItem = multiRequest.requestItems.find(item =>
+      item.category === category &&
+      item.itemName === itemName &&
+      item.requestQty === requestQty &&
+      item.requireDate.toISOString() === new Date(requireDate).toISOString()
+    );
+
+    if (!requestItem) return res.status(404).json({ message: "Requested item not found" });
+
+    const storemanStatus = modifiedQty && modifiedQty != requestQty ? "Modified" : "Accepted";
+
+    const newApproval = {
+      requestId: multiRequest._id,
+      storemanAction: {
+        status: storemanStatus,
+        modifiedItems: storemanStatus === "Modified" ? [{
+          itemName,
+          requestQty,
+          modifiedQty,
+          modifiedReason,
+          modifiedDate: new Date()
+        }] : [],
+        actionDate: new Date()
+      },
+      adminAction: {
+        status: "Pending"
+      }
+    };
+
+    inventory.approvalItems.push(newApproval);
+    await inventory.save();
+
+    res.status(201).json({ message: "Approval saved successfully", newApproval });
+
+  } catch (error) {
+    console.error("Error saving approval:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+// getapprovalRequestInventory
+export const getApprovalRequestInventory = async (req, res) => {
+  try {
+    const approvalRequestInventory = await inventoryEntries.find(
+      { "approvalItems.0": { $exists: true } },
+      "category approvalItems"
+    );
+    if (!approvalRequestInventory || approvalRequestInventory.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No approval Request inventory found." });
+    }
+    res.status(200).json(approvalRequestInventory);
+  } catch (error) {
+    console.error("Error fetching approval request inventory:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };

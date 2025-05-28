@@ -6,6 +6,7 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [role, setRole] = useState(null);
+  const[fname,setFname]=useState(null);
 
   useEffect(() => {
     checkAuth();
@@ -17,16 +18,19 @@ export function AuthProvider({ children }) {
       if (res.status === 200) {
         setIsAuthenticated(true);
         setRole(res.data.role);
+        setFname(res.data.fname);
+
       }
     } catch (error) {
       setIsAuthenticated(false);
       setRole(null);
+      setFname(null);
     }
   };
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, setIsAuthenticated,role,setRole,checkAuth}}
+      value={{ isAuthenticated, setIsAuthenticated,role,setRole,fname,setFname,checkAuth}}
     >
       {children}
     </AuthContext.Provider>

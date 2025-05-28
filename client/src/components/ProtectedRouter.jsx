@@ -5,6 +5,7 @@ import Instance from "../AxiosConfig";
 function ProtectedRoute({ children,allowedRoles }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [role, setRole] = useState(null);
+  const[fname,setFname]=useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -18,6 +19,7 @@ function ProtectedRoute({ children,allowedRoles }) {
       if (response.status === 200) {
         setIsAuthenticated(true);
         setRole(response.data.role);
+        setFname(response.data.fname);
         setLoading(false);
       }else{
         setIsAuthenticated(false);
@@ -36,6 +38,7 @@ function ProtectedRoute({ children,allowedRoles }) {
   if(!isAuthenticated){
     return <Navigate to="/login" replace />;
   }
+
   if(allowedRoles && !allowedRoles.includes(role)){
     return <Navigate to="/inventory-table" replace />;
   }
